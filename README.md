@@ -1,128 +1,140 @@
-# Data Engineer:Case Study
+# Data Engineer Hiring Case Study
 
 ## 📌 Overview
-This project implements a real-time data pipeline that:
-- Generates user interaction data.
-- Streams the data to Apache Kafka.
-- Consumes and aggregates it in MongoDB.
-- Displays the results on a real-time dashboard.
 
-## 🏗️ Architecture
-1. **Data Generation:** A script generates random user interactions.
-2. **Streaming:** Data is published to a Kafka topic.
-3. **Processing & Aggregation:** A Kafka consumer reads messages, performs real-time aggregations, and stores results in MongoDB.
-4. **Visualization:** A Flask-based dashboard fetches and displays real-time aggregated data.
+This project is a **real-time data pipeline** designed to simulate user interactions, stream them through Kafka, process them with real-time aggregations, and visualize the results using a Flask-based dashboard.
 
-## 🚀 Setup Instructions
-### **1️⃣ Install Dependencies**
-```sh
+## 📂 Project Structure
+
+| Directory/File         | Description                                   |
+| ---------------------- | --------------------------------------------- |
+| **config/**            | Configuration files for MongoDB and Kafka     |
+| ├── db_config.py      | Configuration for MongoDB                     |
+| ├── kafka_config.py   | Kafka connection settings                     |
+| **dashboard/**         | Contains dashboard-related files              |
+| ├── templates/        | Stores HTML templates                         |
+| │   ├── index.html    | Frontend UI for real-time visualization       |
+| ├── app.py            | Flask application setup                       |
+| ├── dashboard.py      | Dashboard logic to fetch aggregated data      |
+| **.gitignore**         | Specifies files to ignore in version control  |
+| **.gitpod.yml**        | Gitpod environment configuration              |
+| **consumer.py**        | Kafka consumer for real-time processing       |
+| **data_generator.py**  | Generates random interaction data             |
+| **producer.py**        | Kafka producer publishing data to Kafka topic |
+| **docker-compose.yml** | Docker setup for running services             |
+| **requirements.txt**   | Python dependencies                           |
+| **setup.sh**           | Setup script to initialize environment        |
+
+---
+
+## 🚀 Features
+
+1. **Data Generation & Kafka Streaming**
+   - Generates simulated interaction data (user_id, item_id, interaction_type, timestamp).
+   - Publishes data to Kafka topic at a controlled rate.
+
+2. **Real-time Data Processing & NoSQL Storage**
+   - Kafka consumer fetches and aggregates data (average interactions per user, min/max interactions per item).
+   - Stores processed data in **MongoDB**.
+
+3. **Interactive Dashboard for Visualization**
+   - Fetches aggregated data from MongoDB.
+   - Displays real-time analytics using a Flask-powered web dashboard.
+
+---
+
+## 📦 Tech Stack
+
+- **Kafka** - Message streaming
+- **MongoDB** - NoSQL storage
+- **Flask** - Web framework
+- **Docker** - Containerized deployment
+- **Gitpod/GitHub** - Development environment
+
+---
+
+## 🛠️ Setup & Installation
+
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Docker & Docker Compose
+- Python 3.8+
+- Kafka & Zookeeper
+- MongoDB
+
+### Login to GITPOD
+
+1️⃣ Open Gitpod using the following link:
+   [Gitpod Workspace](https://gitpod.io/#https://github.com/shivajalabagari/dataengineer_casestudy)
+
+2️⃣ Select `PyCharm 2025.1`
+
+3️⃣ Choose the standard configuration:
+   - **Class:** Up to 4 Cores
+   - **Memory:** 8GB RAM
+   - **Storage:** 30GB
+
+### Installation Steps
+
+1️⃣ Clone the repository:
+```bash
+git clone <repo-url>
+cd <project-folder>
+```
+
+2️⃣ Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-### **2️⃣ Start Services (Kafka, Zookeeper, MongoDB)**
-```sh
+3️⃣ Start the services using Docker:
+```bash
 docker-compose up -d
 ```
 
-### **3️⃣ Run Data Generator (Kafka Producer)**
-```sh
-python data_generator.py
+4️⃣ Stop the services:
+```bash
+docker-compose down
 ```
 
-### **4️⃣ Start Kafka Consumer (Aggregations to MongoDB)**
-```sh
-python consumer.py
-```
-
-### **5️⃣ Launch Flask Dashboard**
-```sh
+5️⃣ Start the Flask application manually (if needed):
+```bash
 python dashboard/app.py
 ```
 
-### **6️⃣ Fetch Data from the Dashboard API**
-```sh
+6️⃣ Run the Kafka producer:
+```bash
+python producer.py
+```
+
+7️⃣ Start the Kafka consumer:
+```bash
+python consumer.py
+```
+
+8️⃣ Launch the Flask dashboard:
+```bash
 python dashboard/dashboard.py
 ```
 
-## 🔧 Technologies Used
-- **Python** (Kafka Producer, Consumer, Flask API)
-- **Apache Kafka** (Real-time message streaming)
-- **MongoDB** (NoSQL storage for aggregations)
-- **Flask** (Web API and dashboard visualization)
-- **Docker** (Containerization of services)
-
-## 📂 Folder Structure
+9️⃣ Open the browser and visit:
 ```
-.gitignore
-README.md
-docker-compose.yml
-requirements.txt
-setup.sh
-data_generator.py
-producer.py
-consumer.py
-dashboard/
-    ├── app.py
-    ├── dashboard.py
-config/
-    ├── kafka_config.py
-    ├── db_config.py
+http://localhost:5000
 ```
-
-## 📝 Configuration Files
-### **Kafka Configuration (`config/kafka_config.py`)**
-```python
-KAFKA_BROKER = "localhost:9092"
-KAFKA_TOPIC = "user_interactions"
-```
-
-### **MongoDB Configuration (`config/db_config.py`)**
-```python
-MONGO_URI = "mongodb://localhost:27017/"
-MONGO_DB = "interaction_db"
-MONGO_COLLECTION = "aggregations"
-```
-
-## 🔄 Docker Configuration (`docker-compose.yml`)
-```yaml
-version: '3.8'
-services:
-  zookeeper:
-    image: confluentinc/cp-zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-    ports:
-      - "2181:2181"
-
-  kafka:
-    image: confluentinc/cp-kafka:latest
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    ports:
-      - "9092:9092"
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-```
-
-## 🎯 Key Features
-✔️ **Scalable Kafka Producer & Consumer**
-✔️ **Real-time Data Aggregation**
-✔️ **Interactive Dashboard with Auto-Refreshing Metrics**
-✔️ **Dockerized Deployment**
-
-## 📌 Future Enhancements
-- 📊 **Integrate Kibana or Grafana for better visualization**
-- 🔔 **Add alerting for high interaction volumes**
-- 📈 **Optimize Kafka consumer for higher throughput**
 
 ---
-🚀 **This project demonstrates end-to-end real-time data processing, aggregation, and visualization.**
-Let me know if you need any improvements! 🔥
+
+## 📊 Dashboard Metrics
+
+- **Average Interactions per User** 📈
+- **Max & Min Interactions per Item** 🔢
+- **Live Updates with New Data** 🔄
+
+---
+🤝 Contribution
+
+Feel free to fork this repository, create feature branches, and submit PRs. Suggestions and feedback are always welcome! 🎉
+
+
