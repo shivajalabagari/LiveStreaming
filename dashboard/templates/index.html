@@ -11,10 +11,14 @@
     <table border="1">
         <thead id="table-head">
             <tr>
+                <th>Sequence Number</th>
+                <th>Timestamp</th>
                 <th>User ID</th>
+                <th>Item ID</th>
                 <th>Total Interactions</th>
                 <th>Unique Items</th>
-                <th>Average Interactions</th> <!-- Added column for average -->
+                <th>Processed Interactions</th>
+                <th>Average Interactions</th>
             </tr>
         </thead>
         <tbody id="data-table"></tbody>
@@ -27,15 +31,29 @@
                 tableBody.empty();
 
                 data.forEach(row => {
+                    let sequenceNumber = row.sequence_number || 0;
+                    let timestamp = row.timestamp ? new Date(row.timestamp).toLocaleString() : 0;
+                    let userId = row.user_id || 0;
+                    let itemId = row.item_id || 0;
+                    let totalInteractions = row.total_interactions || "";
+                    let uniqueItems = row.unique_items ? row.unique_items.join(", ") : 0;
+                    let processedInteractions = row.processed_interactions || 0;
+
                     // Calculate average interactions per item
-                    let avgInteractions = (row.total_interactions / row.unique_items.length).toFixed(2);
+                    let avgInteractions = (row.unique_items && row.unique_items.length > 0)
+                        ? (row.total_interactions / row.unique_items.length).toFixed(2) 
+                        : "";
 
                     tableBody.append(`
                         <tr>
-                            <td>${row.user_id}</td>
-                            <td>${row.total_interactions}</td>
-                            <td>${row.unique_items.join(", ")}</td>
-                            <td>${avgInteractions}</td> <!-- Display calculated average -->
+                            <td>${sequenceNumber}</td>
+                            <td>${timestamp}</td>
+                            <td>${userId}</td>
+                            <td>${itemId}</td>
+                            <td>${totalInteractions}</td>
+                            <td>${uniqueItems}</td>
+                            <td>${processedInteractions}</td>
+                            <td>${avgInteractions}</td>
                         </tr>
                     `);
                 });
