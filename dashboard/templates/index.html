@@ -1,20 +1,22 @@
-## dashboard/templates/index.html
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Dashboard</title>
+    <title>Real-Time User Data Dashboard</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <h1>📊 Real-Time User Interaction Dashboard</h1>
+    <h1>📊 Real-Time User Data Dashboard</h1>
     <table border="1">
         <thead>
             <tr>
                 <th>User ID</th>
-                <th>Item ID</th>
+                <th>Name</th>
+                <th>Email (Item ID)</th>
+                <th>Location</th>
+                <th>Age</th>
+                <th>Timestamp</th>
                 <th>Total Interactions</th>
             </tr>
         </thead>
@@ -29,7 +31,11 @@
                     tableBody.append(`
                         <tr>
                             <td>${row.user_id}</td>
+                            <td>${row.name}</td>
                             <td>${row.item_id}</td>
+                            <td>${row.location}</td>
+                            <td>${row.age}</td>
+                            <td>${row.timestamp}</td>
                             <td>${row.total_interactions}</td>
                         </tr>
                     `);

@@ -1,5 +1,5 @@
 ## dashboard/app.py
-```python
+
 from flask import Flask, jsonify, render_template
 from pymongo import MongoClient
 
