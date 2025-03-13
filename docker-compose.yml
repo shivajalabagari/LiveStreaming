@@ -1,4 +1,5 @@
-# docker-compose.yml
+## docker-compose.yml
+```yaml
 version: '3.8'
 services:
   zookeeper:
@@ -20,20 +21,8 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
-    healthcheck:
-      test: ["CMD", "kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
-      interval: 10s
-      retries: 5
-      start_period: 20s
-      timeout: 5s
 
   mongo:
     image: mongo:latest
     ports:
       - "27017:27017"
-    healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      retries: 5
-      start_period: 20s
-      timeout: 5s
